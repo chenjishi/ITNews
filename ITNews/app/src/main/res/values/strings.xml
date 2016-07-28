@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ITNews</string>
+    <string name="app_name">博客园新闻</string>
+    <string name="loading">加载&#8230;</string>
 </resources>

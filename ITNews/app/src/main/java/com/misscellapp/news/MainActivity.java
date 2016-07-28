@@ -3,11 +3,12 @@ package com.misscellapp.news;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.View;
 import okhttp3.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements Callback {
+public class MainActivity extends BaseActivity implements Callback, OnListScrollListener.OnPageEndListener, OnRefreshListener {
 
     private static final String BASE_URL = "http://news.cnblogs.com";
 
@@ -30,22 +31,52 @@ public class MainActivity extends FragmentActivity implements Callback {
 
     private final OkHttpClient mClient = new OkHttpClient();
 
+    private OnListScrollListener mScrollListener;
+
+    private SwipeRefreshLayout mRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViewById(R.id.left_button).setVisibility(View.GONE);
+        setTitle(R.string.app_name);
 
         mListAdapter = new FeedListAdapter(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mScrollListener = new OnListScrollListener(layoutManager, this);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.feed_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mListAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this));
+        recyclerView.addOnScrollListener(mScrollListener);
+
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        mRefreshLayout.setOnRefreshListener(this);
 
         request();
     }
 
+    @Override
+    public void onPageEnd() {
+        mListAdapter.showLoadingView();
+
+        mPage += 1;
+        request();
+    }
+
+    @Override
+    public void onRefresh() {
+        mRefreshLayout.setRefreshing(true);
+
+        mPage = 1;
+        request();
+    }
+
     private void request() {
+        mScrollListener.setIsLoading(true);
+
         Request request = new Request.Builder()
                 .url(String.format("%s/n/page/%d/", BASE_URL, mPage))
                 .build();
@@ -55,25 +86,49 @@ public class MainActivity extends FragmentActivity implements Callback {
 
     @Override
     public void onFailure(Call call, IOException e) {
-        Log.i("test", "#onFailure " + e);
-
+        mScrollListener.setIsLoading(false);
+        stopRefresh();
     }
 
     @Override
     public void onResponse(Call call, Response response) throws IOException {
-        if (!response.isSuccessful()) return;
+        if (response.isSuccessful()) {
+            final List<Feed> feedList = parseList(response.body().string());
+            response.close();
 
-        final List<Feed> feedList = parseList(response.body().string());
-        response.close();
+            if (null != feedList && feedList.size() > 0) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mListAdapter.isLoading()) {
+                            mListAdapter.hideLoadingView();
+                        }
 
-        if (null != feedList && feedList.size() > 0) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mListAdapter.addData(feedList);
-                }
-            });
+                        if (mPage == 1) mListAdapter.clearData();
+
+                        mListAdapter.addData(feedList);
+                        mRefreshLayout.setRefreshing(false);
+                    }
+                });
+            } else {
+                stopRefresh();
+            }
+        } else {
+            stopRefresh();
         }
+        mScrollListener.setIsLoading(false);
+    }
+
+    private void stopRefresh() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.setRefreshing(false);
+                if (mListAdapter.isLoading()) {
+                    mListAdapter.hideLoadingView();
+                }
+            }
+        });
     }
 
     private List<Feed> parseList(String html) {
