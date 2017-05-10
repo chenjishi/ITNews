@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">博客园新闻</string>
     <string name="loading">加载&#8230;</string>
+    <string name="network_disconnect">网络未连接，请检查网络设置</string>
+    <string name="video_url">视频地址</string>
+    <string name="floor_index">第%1$d楼</string>
+    <string name="comment">评论</string>
+    <string name="comment_num">评论(%1$d)</string>
 </resources>

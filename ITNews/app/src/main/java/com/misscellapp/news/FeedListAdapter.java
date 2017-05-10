@@ -1,11 +1,13 @@
 package com.misscellapp.news;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
+import com.misscellapp.news.article.DetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +18,7 @@ import static android.support.v7.widget.RecyclerView.ViewHolder;
 /**
  * Created by chenjishi on 16/7/27.
  */
-public class FeedListAdapter extends Adapter<ViewHolder> {
-
+public class FeedListAdapter extends Adapter<ViewHolder> implements View.OnClickListener {
     private static final int VIEW_NORMAL = 0;
     private static final int VIEW_LOADING = 1;
 
@@ -56,6 +57,17 @@ public class FeedListAdapter extends Adapter<ViewHolder> {
         mIsLoading = false;
     }
 
+    @Override
+    public void onClick(View v) {
+        if (null == v.getTag()) return;
+
+        Feed feed = (Feed) v.getTag();
+
+        Intent intent = new Intent(mContext, DetailsActivity.class);
+        intent.putExtra("feed", feed);
+        mContext.startActivity(intent);
+    }
+
     public boolean isLoading() {
         return mIsLoading;
     }
@@ -87,10 +99,15 @@ public class FeedListAdapter extends Adapter<ViewHolder> {
         viewHolder.titleLabel.setText(feed.title);
         viewHolder.summaryLabel.setText(feed.summary);
         if (!TextUtils.isEmpty(feed.imageUrl)) {
-            Glide.with(mContext).load(feed.imageUrl).into(viewHolder.imageView);
+            String url = "https:" + feed.imageUrl;
+            Glide.with(mContext).load(url).into(viewHolder.imageView);
         }
-        viewHolder.commentLabel.setText(String.format("%s  %s", feed.comments, feed.views));
+        String comment = mContext.getString(R.string.comment_num, feed.commentNum);
+        viewHolder.commentLabel.setText(String.format("%s  %s", comment, feed.views));
         viewHolder.timeLabel.setText(feed.time);
+
+        viewHolder.itemView.setTag(feed);
+        viewHolder.itemView.setOnClickListener(this);
     }
 
     @Override

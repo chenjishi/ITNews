@@ -1,16 +1,17 @@
 package com.misscellapp.news;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.flurry.android.FlurryAgent;
+import com.misscellapp.news.utils.LoadingView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
@@ -25,11 +26,14 @@ public class BaseActivity extends FragmentActivity {
 
     protected boolean mHideTitle;
 
+    private LoadingView mLoadingView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mInflater = LayoutInflater.from(this);
         mRootView = (FrameLayout) findViewById(android.R.id.content);
+        setStatusViewColor(0xFF0D47A1);
     }
 
     @Override
@@ -94,6 +98,42 @@ public class BaseActivity extends FragmentActivity {
     protected void onStop() {
         super.onStop();
         FlurryAgent.onEndSession(this);
+    }
+
+    protected void showLoading() {
+        if (null != mLoadingView && null != mLoadingView.getParent()) {
+            ((ViewGroup) mLoadingView.getParent()).removeView(mLoadingView);
+        } else {
+            mLoadingView = new LoadingView(this);
+        }
+
+        mLoadingView.showLoading();
+        mRootView.addView(mLoadingView, new FrameLayout.LayoutParams(MATCH_PARENT,
+                MATCH_PARENT));
+    }
+
+    protected void hideLoading() {
+        if (null != mLoadingView) {
+            mRootView.removeView(mLoadingView);
+        }
+    }
+
+    protected void setError() {
+        setError(getString(R.string.network_disconnect));
+    }
+
+    protected void setError(String text) {
+        if (null != mLoadingView) {
+            mLoadingView.setError(text);
+        }
+    }
+
+    protected void setStatusViewColor(@ColorInt int color) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().setStatusBarColor(color);
     }
 
     protected int dp2px(int n) {

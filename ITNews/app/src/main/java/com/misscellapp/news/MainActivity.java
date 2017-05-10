@@ -1,5 +1,8 @@
 package com.misscellapp.news;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -7,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import okhttp3.*;
 import org.jsoup.Jsoup;
@@ -18,6 +20,8 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.text.TextUtils.isEmpty;
 
 public class MainActivity extends BaseActivity implements Callback, OnListScrollListener.OnPageEndListener, OnRefreshListener {
 
@@ -38,6 +42,7 @@ public class MainActivity extends BaseActivity implements Callback, OnListScroll
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkPermission();
         setContentView(R.layout.activity_main);
         findViewById(R.id.left_button).setVisibility(View.GONE);
         setTitle(R.string.app_name);
@@ -132,7 +137,7 @@ public class MainActivity extends BaseActivity implements Callback, OnListScroll
     }
 
     private List<Feed> parseList(String html) {
-        if (TextUtils.isEmpty(html)) return null;
+        if (isEmpty(html)) return null;
 
         Document doc = Jsoup.parse(html);
         if (null == doc) return null;
@@ -149,6 +154,10 @@ public class MainActivity extends BaseActivity implements Callback, OnListScroll
             if (null != title && title.size() > 0) {
                 Element titleLink = title.get(0).select("a").first();
                 feed.title = titleLink.text();
+                String href = titleLink.attr("href");
+                if (!isEmpty(href)) {
+                    feed.id = href.replaceAll("\\D+", "");
+                }
                 feed.url = String.format("%s%s", BASE_URL, titleLink.attr("href"));
             }
 
@@ -165,7 +174,9 @@ public class MainActivity extends BaseActivity implements Callback, OnListScroll
 
             Elements comments = el.select("span.comment");
             if (null != comments && comments.size() > 0) {
-                feed.comments = comments.get(0).select("a").first().text();
+                String str = comments.get(0).select("a").first().text();
+                str = str.replaceAll("\\D+", "");
+                if (!isEmpty(str)) feed.commentNum = Integer.parseInt(str);
             }
 
             Elements views = el.select("span.view");
@@ -182,5 +193,24 @@ public class MainActivity extends BaseActivity implements Callback, OnListScroll
         }
 
         return feedList;
+    }
+
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+
+        String[] permissions = new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE};
+
+        boolean flag = true;
+        for (String s : permissions) {
+            if (checkSelfPermission(s) != PackageManager.PERMISSION_GRANTED) {
+                flag = false;
+                break;
+            }
+        }
+
+        if (!flag) requestPermissions(permissions, 233);
     }
 }

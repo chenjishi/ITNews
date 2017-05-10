@@ -6,4 +6,7 @@
     <color name="divider_color">#C9C9C9</color>
     <color name="blue">#0D47A1</color>
     <color name="highlight_color">#66CCCCCC</color>
+    <color name="text_color">#333</color>
+    <color name="text_color_light">#999</color>
+    <color name="highlight">#DDD</color>
 </resources>
