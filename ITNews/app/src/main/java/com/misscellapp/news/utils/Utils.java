@@ -3,6 +3,7 @@ package com.misscellapp.news.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,5 +50,13 @@ public class Utils {
         }
 
         return false;
+    }
+
+    public static void toast(Context ctx, int resId) {
+        toast(ctx, ctx.getString(resId));
+    }
+
+    public static void toast(Context ctx, String s) {
+        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
     }
 }

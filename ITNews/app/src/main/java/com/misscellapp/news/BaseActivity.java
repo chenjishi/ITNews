@@ -82,7 +82,7 @@ public class BaseActivity extends FragmentActivity {
     }
 
     private void addViewToRoot(View view) {
-        mRootView.setBackgroundColor(0xF0F0F0);
+        mRootView.setBackgroundColor(0xFFF0F0F0);
         if (!mHideTitle) {
             int resId = -1 == mTitleResId ? R.layout.base_title_layout
                     : mTitleResId;

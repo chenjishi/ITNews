@@ -6,4 +6,6 @@
     <string name="floor_index">第%1$d楼</string>
     <string name="comment">评论</string>
     <string name="comment_num">评论(%1$d)</string>
+    <string name="no_comments">暂无评论</string>
+    <string name="image_loading">图片加载&#8230;</string>
 </resources>

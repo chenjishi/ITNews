@@ -30,7 +30,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by jishichen on 2017/5/2.
  */
 public class DetailsActivity extends BaseActivity implements Listener<Article>, ErrorListener,
-JSCallback, View.OnClickListener {
+        JSCallback, View.OnClickListener {
     private static final int TAG_SHARE = 233;
     private static final int TAG_FAVORITE = 234;
     private static final int TAG_COMMENT = 235;
@@ -80,9 +80,9 @@ JSCallback, View.OnClickListener {
 
     @Override
     public void onImageClicked(String url) {
-        Intent intent = new Intent(this, ImageBrowseActivity.class);
+        Intent intent = new Intent(this, ImageActivity.class);
         intent.putExtra("imgsrc", url);
-        intent.putStringArrayListExtra("images", mArticle.imageList);
+        intent.putStringArrayListExtra("image_list", mArticle.imageList);
         startActivity(intent);
     }
 
@@ -144,9 +144,13 @@ JSCallback, View.OnClickListener {
         int tag = (Integer) v.getTag();
         switch (tag) {
             case TAG_COMMENT:
-                Intent intent = new Intent(this, CommentActivity.class);
-                intent.putExtra("post_id", mFeed.id);
-                startActivity(intent);
+                if (mFeed.commentNum > 0) {
+                    Intent intent = new Intent(this, CommentActivity.class);
+                    intent.putExtra("post_id", mFeed.id);
+                    startActivity(intent);
+                } else {
+                    Utils.toast(this, R.string.no_comments);
+                }
                 break;
         }
     }

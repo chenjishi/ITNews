@@ -5,13 +5,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.misscellapp.news.BaseActivity;
 import com.misscellapp.news.DividerItemDecoration;
 import com.misscellapp.news.R;
+import com.misscellapp.news.utils.Constants;
 import com.misscellapp.news.utils.ErrorListener;
 import com.misscellapp.news.utils.Listener;
 import com.misscellapp.news.utils.NetworkRequest;
@@ -48,9 +48,7 @@ public class CommentActivity extends BaseActivity implements Listener<String>, E
         recyclerView.setAdapter(mListAdapter);
 
         showLoading();
-        String url = "https://news.cnblogs.com/CommentAjax/GetComments?contentId=%s&_=%d";
-        url = String.format(url, postId, System.currentTimeMillis());
-        Log.i("test", "#url " + url);
+        String url = String.format(Constants.COMMENTS, postId, System.currentTimeMillis());
         NetworkRequest.getInstance().get(url, this, this);
     }
 

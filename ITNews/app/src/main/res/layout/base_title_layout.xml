@@ -31,7 +31,6 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:ellipsize="end"
-            android:singleLine="true"
             android:textColor="@android:color/white"
-            android:textSize="17sp"/>
+            android:textSize="20sp"/>
 </RelativeLayout>

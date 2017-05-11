@@ -25,6 +25,8 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".comment.CommentActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".article.ImageActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
