@@ -7,7 +7,7 @@ https://play.google.com/store/apps/details?id=com.misscellapp.news&hl=zh-CN
 ## ScreenShot
 
 <p align="center">
-![alt text][images/screen1.png]
+![alt text][/images/screen1.png]
 
   <img src="https://raw.github.com/chenjishi/usite/master/image_1.png?raw=true" 
   alt="usite" height="960" width="540"/>
