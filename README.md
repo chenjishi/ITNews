@@ -6,10 +6,11 @@ https://play.google.com/store/apps/details?id=com.misscellapp.news&hl=zh-CN
 
 ## ScreenShot
 
-<p align="center">
 ![alt text][./images/screen1.png]
 
-  <img src="https://raw.github.com/chenjishi/usite/master/image_1.png?raw=true" 
+<p align="center">
+
+  <img src="https://github.com/chenjishi/ITNews/blob/master/images/screen1.png" 
   alt="usite" height="960" width="540"/>
 </p>
 <p align="center">
