@@ -67,10 +67,6 @@ public class BaseActivity extends FragmentActivity {
         finish();
     }
 
-    public void onRightViewClicked(View view) {
-
-    }
-
     protected void setContentView(int layoutResID, int titleResId) {
         mTitleResId = titleResId;
         setContentView(layoutResID);

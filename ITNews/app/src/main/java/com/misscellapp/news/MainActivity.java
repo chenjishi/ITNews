@@ -1,6 +1,7 @@
 package com.misscellapp.news;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,7 +24,8 @@ import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
 
-public class MainActivity extends BaseActivity implements Callback, OnListScrollListener.OnPageEndListener, OnRefreshListener {
+public class MainActivity extends BaseActivity implements Callback, OnListScrollListener.OnPageEndListener,
+        OnRefreshListener, View.OnClickListener {
 
     private static final String BASE_URL = "http://news.cnblogs.com";
 
@@ -39,6 +41,8 @@ public class MainActivity extends BaseActivity implements Callback, OnListScroll
 
     private SwipeRefreshLayout mRefreshLayout;
 
+    private LinearLayoutManager mLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,12 +51,13 @@ public class MainActivity extends BaseActivity implements Callback, OnListScroll
         findViewById(R.id.left_button).setVisibility(View.GONE);
         setTitle(R.string.app_name);
 
+        findViewById(R.id.title_layout).setOnClickListener(this);
         mListAdapter = new FeedListAdapter(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mScrollListener = new OnListScrollListener(layoutManager, this);
+        mLayoutManager = new LinearLayoutManager(this);
+        mScrollListener = new OnListScrollListener(mLayoutManager, this);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.feed_list);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mListAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this));
         recyclerView.addOnScrollListener(mScrollListener);
@@ -61,6 +66,13 @@ public class MainActivity extends BaseActivity implements Callback, OnListScroll
         mRefreshLayout.setOnRefreshListener(this);
 
         request();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.title_layout) {
+            mLayoutManager.scrollToPositionWithOffset(0, 0);
+        }
     }
 
     @Override

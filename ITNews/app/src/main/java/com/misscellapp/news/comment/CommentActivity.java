@@ -131,7 +131,7 @@ public class CommentActivity extends BaseActivity implements Listener<String>, E
             holder.floorView.setText(getString(R.string.floor_index, position + 1));
             String userInfo = "<font color='#0D47A1'>" + comment.name + "</font> " + comment.time;
             holder.nameView.setText(Html.fromHtml(userInfo));
-            holder.contentView.setText(comment.content);
+            holder.contentView.setText(Html.fromHtml(comment.content));
         }
 
         @Override

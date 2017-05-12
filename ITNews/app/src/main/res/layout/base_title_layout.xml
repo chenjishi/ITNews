@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/title_bar"
+                android:id="@+id/title_layout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@color/blue">
@@ -19,10 +19,7 @@
             android:id="@+id/right_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/item_highlight_bkg"
-            android:clickable="true"
-            android:onClick="onRightViewClicked"/>
+            android:layout_alignParentRight="true"/>
     <TextView
             android:id="@+id/label_title"
             android:layout_width="wrap_content"

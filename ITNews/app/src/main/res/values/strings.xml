@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">博客园新闻</string>
+    <string name="app_name">博客园-IT新闻</string>
     <string name="loading">加载&#8230;</string>
     <string name="network_disconnect">网络未连接，请检查网络设置</string>
     <string name="video_url">视频地址</string>

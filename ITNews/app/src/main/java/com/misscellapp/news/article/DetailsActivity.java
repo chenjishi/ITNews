@@ -1,11 +1,13 @@
 package com.misscellapp.news.article;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageButton;
@@ -51,7 +53,7 @@ public class DetailsActivity extends BaseActivity implements Listener<Article>, 
         mFeed = args.getParcelable("feed");
         String url = mFeed.url;
 
-        findViewById(R.id.title_bar).setOnClickListener(this);
+        findViewById(R.id.title_layout).setOnClickListener(this);
         mWebView = (WebView) findViewById(R.id.web_view);
         mWebView.setHorizontalScrollBarEnabled(false);
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
@@ -134,8 +136,12 @@ public class DetailsActivity extends BaseActivity implements Listener<Article>, 
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.title_bar) {
-            mWebView.scrollTo(0, 0);
+        if (v.getId() == R.id.title_layout) {
+            ObjectAnimator animator = ObjectAnimator.ofInt(mWebView, "scrollY",
+                    mWebView.getScrollY(), 0);
+            animator.setDuration(360);
+            animator.setInterpolator(new AccelerateInterpolator());
+            animator.start();
             return;
         }
 
