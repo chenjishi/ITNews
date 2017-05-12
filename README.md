@@ -6,7 +6,7 @@ https://play.google.com/store/apps/details?id=com.misscellapp.news&hl=zh-CN
 
 ## ScreenShot
 
-![alt text][./images/screen1.png]
+![alt text][/images/screen1.png]
 
 <p align="center">
 
